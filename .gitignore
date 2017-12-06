@@ -1,3 +1,10 @@
+/vendor/*
+!/vendor/maiconpinto
+!/vendor/maiconpinto/*
+/config/app.php
+/tmp/*
+/logs/*
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

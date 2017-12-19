@@ -193,7 +193,7 @@ class AppController extends Controller
         $current_datetime = new DateTime();
         $current_datetime->setTimezone(new DateTimeZone('Asia/Calcutta'));
         $open_datetime = new DateTime("2017-09-01 08:59:59", new DateTimeZone('Asia/Calcutta'));
-        $close_datetime = new DateTime("2017-11-15 08:59:59", new DateTimeZone('Asia/Calcutta'));
+        $close_datetime = new DateTime("2017-12-30 08:59:59", new DateTimeZone('Asia/Calcutta'));
         if ($current_datetime >= $open_datetime && $current_datetime <= $close_datetime) {
             return true;
         }

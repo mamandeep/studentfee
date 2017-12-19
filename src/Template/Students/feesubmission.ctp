@@ -78,32 +78,136 @@
             'id' => "select_fee_type"]); ?></td>
     </tr>
     <?php if(is_array($student['fees'])) {
-                foreach ($student['fees'] as $fee) {
-                    $fee_amount = 0; $late_fee = 0; $total = 0;
-                    if(empty($fee['category_id']) || $student['category']['id'] == $fee['category_id']) {
-                    $fee_amount = $fee_amount + intval($fee['amount']);
+                $fee_amount_academic = 0; $late_fee_academic = 0; $total_academic = 0;
             ?>
-        <tr class="<?php echo $fee['fee_type']; ?>">
-            <td class="print_headers">Amount (Rs.)</td>
-            <td class="print_value"><?php echo $fee['amount']; ?></td>
-            <td class="print_headers">Fee Type</td>
-            <td class="print_value"><?php echo $fee['fee_type']; ?></td>
-        </tr>
-        <?php if($latefee == true) { 
-                $late_fee = intval($fee['late_fee_per_day']) * ($no_of_days);
-                $fee_amount = $fee_amount + $late_fee;
+     <tr class="ACADEMIC">
+            <td></td>
+            <td colspan="3">
+                <table width="100%" border="1px solid black" style="border-collapse: collapse;">
+                    <th>
+                        <tr>
+                            <td class="print_headers">Fee Type</td>
+                            <td class="print_value">Amount (Rs.)</td>
+                        </tr>
+                    </th>
+                    <tbody>
+                        <tr>
+                            <td class="print_headers">Degree Convocation Fee</td>
+                            <td class="print_value"><?php echo $student['degree_convo_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Alumni Association Life</td>
+                            <td class="print_value"><?php echo $student['alumni_association_life']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Security Deposit Refundable</td>
+                            <td class="print_value"><?php echo $student['security_deposit_refundable']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Admission Fee</td>
+                            <td class="print_value"><?php echo $student['admission_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Identity Card Fee</td>
+                            <td class="print_value"><?php echo $student['identity_card']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Medical Fee</td>
+                            <td class="print_value"><?php echo $student['medical_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Literary Cultural Fee</td>
+                            <td class="print_value"><?php echo $student['literary_cultural_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Students Union Fund</td>
+                            <td class="print_value"><?php echo $student['students_union_fund']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Tuition Fee</td>
+                            <td class="print_value"><?php echo $student['tuition_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Laboratory Fee</td>
+                            <td class="print_value"><?php echo $student['laboratory_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Library e-Lib Fee</td>
+                            <td class="print_value"><?php echo $student['library_e_lib_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Computer Internet Fee</td>
+                            <td class="print_value"><?php echo $student['computer_internet_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Examination Fee</td>
+                            <td class="print_value"><?php echo $student['examination_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Marksheet Fee</td>
+                            <td class="print_value"><?php echo $student['marksheet_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Sports Fee</td>
+                            <td class="print_value"><?php echo $student['sports_fee']; ?></td>
+                        </tr>
+                        <tr>
+                            <td class="print_headers">Students Welfare Fund</td>
+                            <td class="print_value"><?php echo $student['students_welfare_fund']; ?></td>
+                        </tr>
+        <?php $fee_amount_academic =        $student['degree_convo_fee'] +
+                                            $student['alumni_association_life'] +
+                                            $student['security_deposit_refundable'] +
+                                            $student['admission_fee'] +
+                                            $student['identity_card'] +
+                                            $student['medical_fee'] +
+                                            $student['literary_cultural_fee'] +
+                                            $student['students_union_fund'] +
+                                            $student['tuition_fee'] +
+                                            $student['laboratory_fee'] +
+                                            $student['library_e_lib_fee'] +
+                                            $student['computer_internet_fee'] +
+                                            $student['examination_fee'] +
+                                            $student['marksheet_fee'] +
+                                            $student['sports_fee'] +
+                                            $student['students_welfare_fund'];
+                if($latefee == true) { 
+                    $late_fee_academic = intval($student['late_fee_per_day']) * ($no_of_days);
+                    $fee_amount_academic = $fee_amount_academic + $late_fee_academic;
             ?>
-           <tr class="<?php echo $fee['fee_type'] . "_late"; ?>">
+           <tr>
                 <td class="print_headers">Late Fee Amount (Rs.)</td>
-                <td colspan="3" class="print_value"><?php echo $late_fee ?></td>
+                <td class="print_value"><?php echo (intval($student['late_fee_per_day']) * ($no_of_days)); ?></td>
            </tr> 
         <?php } ?>
-        <tr class="<?php echo $fee['fee_type']. "_total"; ?>">
+          <tr>
             <td class="print_headers">Total Payable Fee(Rs.)</td>
-            <td colspan="3" class="print_value"><?php echo $fee_amount; ?></td>
+            <td class="print_value"><?php echo $fee_amount_academic; ?></td>
         </tr>
-        <?php } ?>
-        <?php } } ?>
+        </tbody>
+            </table>
+        </td>
+        </tr>
+        <tr class="HOSTEL">
+            <td></td>
+            <td colspan="3">
+                <table width="100%" border="1px solid black" style="border-collapse: collapse;">
+                    <th>
+                        <tr>
+                            <td class="print_headers">Fee Type</td>
+                            <td class="print_value">Amount (Rs.)</td>
+                        </tr>
+                    </th>
+                    <tbody>
+                        <tr>
+                            <td class="print_headers">Hostel Fee</td>
+                            <td class="print_value"><?php echo $student['hostel_fee']; ?></td>
+                        </tr>
+                   </tbody>
+                </table>
+            </td>
+        </tr>
+                <?php } ?>
     <tr>
         <td class="print_headers">Remarks</td>
         <td colspan="3" class="print_value"><?php echo $this->Form->control('remarks', ['label' => false, 'maxlength'=>'50']); ?></td>
@@ -140,7 +244,9 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        $(".ACADEMIC").hide();
         $(".ACADEMIC td").hide();
+        $(".HOSTEL").hide();
         $(".HOSTEL td").hide();
         $(".ACADEMIC_late td").hide();
         $(".HOSTEL_late td").hide();
@@ -157,6 +263,7 @@
                 $('.ACADEMIC_total td').show();
                 $('.ACADEMIC_total').show();
                 $('.HOSTEL td').hide();
+                $(".HOSTEL").hide();
                 $('.HOSTEL_late td').hide();
                 $('.HOSTEL_total td').hide();
             } else if(val == 'HOSTEL'){
@@ -169,6 +276,7 @@
                 $('.ACADEMIC td').hide();
                 $('.ACADEMIC_late td').hide();
                 $('.ACADEMIC_total td').hide();
+                $(".ACADEMIC").hide();
             }
             else {
                 $('.HOSTEL td').hide();

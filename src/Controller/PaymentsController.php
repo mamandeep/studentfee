@@ -156,8 +156,9 @@ class PaymentsController extends AppController {
                                     ->toArray();
             //debug($session->read('late_fee_applicable'));
             //debug($session->read('late_fee_amount_ACADEMIC'));
+            $fee = (($session->read('fee_type') === "ACADEMIC") ? intval($session->read('fee_amount_ACADEMIC')) : $session->read('fee_amount_HOSTEL'));
             if($session->read('late_fee_applicable') == true) {
-                $fee = $fees[0]['amount'] + (($session->read('fee_type') === "ACADEMIC") ? intval($session->read('late_fee_amount_ACADEMIC')) : intval($session->read('late_fee_amount_HOSTEL')));
+                $fee = $fee + (($session->read('fee_type') === "ACADEMIC") ? intval($session->read('late_fee_amount_ACADEMIC')) : 0);
             }
             
             $applicantId = $this->Auth->user('username');

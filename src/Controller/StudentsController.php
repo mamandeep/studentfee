@@ -29,17 +29,17 @@ class StudentsController extends AppController {
                                 ->toArray();
         if(count($student) != 1) {
             $this->Flash->error(__('Please contact Support.'));
-            return $this->redirect(['action' => 'feesubmission']);
+            return null;
         }
         $flag = $this->isFormFillingOpen();
-        $closingDate = new DateTime('2017-10-30 23:59:59', new DateTimeZone('Asia/Calcutta'));
+        $closingDate = new DateTime('2017-12-15 23:59:59', new DateTimeZone('Asia/Calcutta'));
         $late_fee_apply = $this->checklatefee($closingDate);
         $session = $this->request->session();
         if ($this->request->is(['patch', 'post', 'put']) && $flag === true) {
             //debug($this->request->getData()); return null;
             $student_id = intval($student[0]['id']);
             $token = $session->read('feetoken');
-            $fee_type = "";  
+            $fee_type = "";
             if($token === $this->request->data()['tokenid']) {
                 $fee_type = (!empty($this->request->getData()['fee_type']) ? $this->request->getData()['fee_type'] : NULL);
                 if(empty($fee_type) || is_null($fee_type) || $fee_type === "select") {
@@ -82,11 +82,11 @@ class StudentsController extends AppController {
                     // fetch the entry, update the entry into the database and redirect to print receipt page (for this receipt)
                     $receivedFees_new = $receivedFees[0];
                     $receivedFees_new = $receivedFeeTable->patchEntity($receivedFees_new, ['account_id' => ($fee_type === "ACADEMIC") ? 24828 : (($fee_type === "HOSTEL") ? 24829 : NULL),
-                                                                                   'response_code' => 0,
-                                                                                   'payment_id' => intval($fee_received['payment_id']),
-                                                                                   'payment_transaction_id' => intval($fee_received['payment_transaction_id']),
-                                                                                   'payment_amount' => intval($fee_received['payment_amount']),
-                                                                                   'payment_date_created' => date("Y-m-d H:i:s", strtotime($fee_received['payment_date_created']))]);
+                                                                                            'response_code' => 0,
+                                                                                            'payment_id' => intval($fee_received['payment_id']),
+                                                                                            'payment_transaction_id' => intval($fee_received['payment_transaction_id']),
+                                                                                            'payment_amount' => intval($fee_received['payment_amount']),
+                                                                                            'payment_date_created' => date("Y-m-d H:i:s", strtotime($fee_received['payment_date_created']))]);
                     //$receivedFees->user_id = $this->Auth->user('id');
                     if ($receivedFeeTable->save($receivedFees_new)) {
                         $this->Flash->success(__('Your fee has been received and saved successfully.'));
@@ -121,12 +121,12 @@ class StudentsController extends AppController {
                 }
                 else {
                     $this->Flash->error(__('Unable to initiate your fee submission. Please contact support.'));
-                    return $this->redirect(['action' => 'feesubmission']);
+                    return null;
                 }
             }
             else {
                 $this->Flash->error(__('Error occured. Please contat Support.'));
-                return $this->redirect(['action' => 'feesubmission']);
+                return null;
             }
         }
         else if($this->request->is(['patch', 'post', 'put']) && $flag === false) {
@@ -145,18 +145,32 @@ class StudentsController extends AppController {
         $session->write('late_fee_applicable', $late_fee_apply);
         $no_of_days = $this->getNoOfDays($closingDate);
         $this->set('no_of_days', $no_of_days);
-        foreach($student[0]['fees'] as $fee) {
+        //foreach($student[0]['fees'] as $fee) {
             //debug($this->checklatefee($closingDate));
-            if($this->checklatefee($closingDate)) {
-                //debug($fee['category_id'] == $student[0]['category_id']); debug($fee['fee_type']);
-                if((empty($fee['category_id']) && $fee['fee_type'] == "ACADEMIC" ) || ($fee['category_id'] == $student[0]['category_id'] && $fee['fee_type'] == "ACADEMIC")) {
-                    $session->write('late_fee_amount_ACADEMIC', $no_of_days * $fee['late_fee_per_day']);
-                }
-                if($fee['category_id'] == $student[0]['category_id'] && $fee['fee_type'] == "HOSTEL") {
-                    $session->write('late_fee_amount_HOSTEL', $no_of_days * $fee['late_fee_per_day']);
-                }
-            }
+        $fee_amount_academic =        $student[0]['degree_convo_fee'] +
+                                        $student[0]['alumni_association_life'] +
+                                        $student[0]['security_deposit_refundable'] +
+                                        $student[0]['admission_fee'] +
+                                        $student[0]['identity_card'] +
+                                        $student[0]['medical_fee'] +
+                                        $student[0]['literary_cultural_fee'] +
+                                        $student[0]['students_union_fund'] +
+                                        $student[0]['tuition_fee'] +
+                                        $student[0]['laboratory_fee'] +
+                                        $student[0]['library_e_lib_fee'] +
+                                        $student[0]['computer_internet_fee'] +
+                                        $student[0]['examination_fee'] +
+                                        $student[0]['marksheet_fee'] +
+                                        $student[0]['sports_fee'] +
+                                        $student[0]['students_welfare_fund'];
+        $session->write('fee_amount_ACADEMIC', $fee_amount_academic);
+        $session->write('fee_amount_HOSTEL', $student[0]['hostel_fee']);
+        if($this->checklatefee($closingDate)) {
+            //debug($fee['category_id'] == $student[0]['category_id']); debug($fee['fee_type']);
+            $session->write('late_fee_amount_ACADEMIC', $no_of_days * $student[0]['late_fee_per_day']);
+            //$session->write('late_fee_amount_HOSTEL', $no_of_days * $fee['late_fee_per_day']);
         }
+        //}
         
         $this->set('token', $token);
         //$this->set('fee', $fee);
